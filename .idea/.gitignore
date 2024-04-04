@@ -1,0 +1,11 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+# Ignore IDE-specific files
+.idea/
+*.iml
+
+# Ignore build-related directories
+FitnessTrackerApp/.gradle/
+FitnessTrackerApp/app/build/
