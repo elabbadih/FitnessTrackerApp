@@ -13,9 +13,8 @@
         android:theme="@style/Theme.FitnessTrackerApp"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".FitnessTrackerActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.FitnessTrackerApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
