@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">FitnessTrackerApp</string>
+
+    <!-- Scaffold -->
+    <string name="bottom_app_bar_item_1">DASHBOARD</string>
+    <string name="bottom_app_bar_item_2">WORKOUTS</string>
+    <string name="bottom_app_bar_item_3">PROGRESS</string>
+    <string name="bottom_app_bar_item_4">SETTINGS</string>
 </resources>
