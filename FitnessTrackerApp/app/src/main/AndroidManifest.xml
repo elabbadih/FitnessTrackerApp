@@ -15,7 +15,9 @@
         <activity
             android:name=".FitnessTrackerActivity"
             android:exported="true"
-            android:theme="@style/Theme.FitnessTrackerApp">
+            android:theme="@style/Theme.FitnessTrackerApp"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
