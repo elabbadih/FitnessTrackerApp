@@ -75,7 +75,6 @@ fun CustomTopAppBar() {
         },
         modifier = Modifier
             .fillMaxWidth()
-            .height(36.dp)
     )
 }
 
@@ -84,7 +83,6 @@ fun CustomBottomAppBar(
     onItemSelected: () -> Unit
 ) {
     BottomAppBar(
-        modifier = Modifier.height(36.dp),
         containerColor = colorScheme.primaryContainer,
         contentColor = colorScheme.primary
     ) {
