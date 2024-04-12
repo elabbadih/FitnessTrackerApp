@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,16 +26,24 @@ import com.example.fitnesstrackerapp.ui.theme.LightModePrimary
 fun SplashScreen(
     viewModel: LoginViewModel = viewModel(),
     navigateToLoginScreen: () -> Unit,
-    navigateToHomeScreen: () -> Unit
+    navigateToDashboardScreen: (String) -> Unit
 ) {
+    
+    LaunchedEffect(Unit) {
+        viewModel.isUserLoggedIn()
+    }
 
-    // Observe user logged in status
-    val loginState by viewModel.loginState.collectAsState(null)
+    // Observe user logged in status on launch
+    val splashLoginState by viewModel.splashLoginState.collectAsState(null)
 
-    when(loginState) {
-        true -> navigateToHomeScreen()
-        false -> navigateToLoginScreen()
-        else -> {}
+    // Use the displayName to determine if user is logged in
+    // If displayName is not empty, navigate to Dashboard, otherwise Login screen
+    splashLoginState?.also { displayName ->
+        if (displayName.isNotEmpty()) {
+            navigateToDashboardScreen(displayName)
+        } else {
+            navigateToLoginScreen()
+        }
     }
 
     Box(

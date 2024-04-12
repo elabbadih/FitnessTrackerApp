@@ -28,8 +28,10 @@ import com.example.fitnesstrackerapp.login.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = viewModel(),
-    registrationAction: () -> Unit
+    navigateToRegistration: () -> Unit
 ) {
+
+    // TODO Implement navigateToDashboard
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -38,9 +40,7 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .verticalScroll(
-                rememberScrollState()
-            )
+            .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.height(48.dp))
 
@@ -79,7 +79,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(
-            onClick = { registrationAction() },
+            onClick = { navigateToRegistration() },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = "Don't have an account? Register here")
@@ -91,6 +91,6 @@ fun LoginScreen(
 @Composable
 fun PreviewLoginScreen() {
     LoginScreen(
-        registrationAction = {}
+        navigateToRegistration = {}
     )
 }

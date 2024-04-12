@@ -10,17 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.example.fitnesstrackerapp.homepage.ui.screens.HomepageScreen
+import com.example.fitnesstrackerapp.dashboard.ui.screens.DashboardScreen
 import com.example.fitnesstrackerapp.login.ui.screens.LoginScreen
+import com.example.fitnesstrackerapp.login.ui.screens.RegistrationScreen
 import com.example.fitnesstrackerapp.login.ui.screens.SplashScreen
 import com.example.fitnesstrackerapp.ui.theme.FitnessTrackerAppTheme
-
-const val temporaryUsername: String = "Hicham"
 
 class FitnessTrackerActivity : ComponentActivity() {
 
@@ -69,16 +70,23 @@ fun AppNavHost(
         startDestination = startDestination
     ) {
         composable(route = NavigationItem.Splash.route) {
-            SplashScreen(
-                navigateToHomeScreen = { navController.navigate(route = NavigationItem.Home.route) },
-                navigateToLoginScreen = { navController.navigate(route = NavigationItem.Login.route) }
-            )
+            SplashScreen(navigateToLoginScreen = { navController.navigate(route = NavigationItem.Login.route) }) { displayName ->
+                navController.navigate("${NavigationItem.Dashboard.route}/$displayName")
+            }
         }
         composable(route = NavigationItem.Login.route) {
-            LoginScreen(registrationAction = { navController.navigate(route = NavigationItem.Registration.route) })
+            LoginScreen(navigateToRegistration = { navController.navigate(route = NavigationItem.Registration.route) })
         }
-        composable(route = NavigationItem.Home.route) {
-            HomepageScreen(username = temporaryUsername)
+        composable(route = NavigationItem.Registration.route) {
+            RegistrationScreen { displayName ->
+                navController.navigate("${NavigationItem.Dashboard.route}/$displayName")
+            }
+        }
+        composable(
+            route = "${NavigationItem.Dashboard.route}/{displayName}",
+            arguments = listOf(navArgument("displayName") { type = NavType.StringType })
+        ) { backstackEntry ->
+            DashboardScreen(displayName = backstackEntry.arguments?.getString("displayName") ?: "")
         }
     }
 }

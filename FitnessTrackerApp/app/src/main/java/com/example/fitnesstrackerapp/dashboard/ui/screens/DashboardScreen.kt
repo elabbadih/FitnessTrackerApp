@@ -1,4 +1,4 @@
-package com.example.fitnesstrackerapp.homepage.ui.screens
+package com.example.fitnesstrackerapp.dashboard.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -11,17 +11,19 @@ import androidx.compose.ui.unit.dp
 import com.example.fitnesstrackerapp.common.ui.FitnessTrackerLayout
 
 @Composable
-fun HomepageScreen(
+fun DashboardScreen(
     modifier: Modifier = Modifier,
-    username: String
+    displayName: String
 ) {
     FitnessTrackerLayout(content = {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Welcome $username!",
+                text = "Welcome $displayName!",
                 modifier = modifier
             )
         }
