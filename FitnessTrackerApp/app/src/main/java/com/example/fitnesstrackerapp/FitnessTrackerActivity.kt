@@ -10,11 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.example.fitnesstrackerapp.dashboard.ui.screens.DashboardScreen
@@ -70,23 +68,24 @@ fun AppNavHost(
         startDestination = startDestination
     ) {
         composable(route = NavigationItem.Splash.route) {
-            SplashScreen(navigateToLoginScreen = { navController.navigate(route = NavigationItem.Login.route) }) { displayName ->
-                navController.navigate("${NavigationItem.Dashboard.route}/$displayName")
-            }
+            SplashScreen(
+                navigateToLogin = { navController.navigate(route = NavigationItem.Login.route) },
+                navigateToDashboard = { navController.navigate(route = NavigationItem.Dashboard.route) }
+            )
         }
         composable(route = NavigationItem.Login.route) {
-            LoginScreen(navigateToRegistration = { navController.navigate(route = NavigationItem.Registration.route) })
+            LoginScreen(
+                navigateToRegistration = { navController.navigate(route = NavigationItem.Registration.route) },
+                navigateToDashboard = { navController.navigate(route = NavigationItem.Dashboard.route) }
+            )
         }
         composable(route = NavigationItem.Registration.route) {
-            RegistrationScreen { displayName ->
-                navController.navigate("${NavigationItem.Dashboard.route}/$displayName")
-            }
+            RegistrationScreen(navigateToDashboard = { navController.navigate(route = NavigationItem.Dashboard.route) })
         }
-        composable(
-            route = "${NavigationItem.Dashboard.route}/{displayName}",
-            arguments = listOf(navArgument("displayName") { type = NavType.StringType })
-        ) { backstackEntry ->
-            DashboardScreen(displayName = backstackEntry.arguments?.getString("displayName") ?: "")
+        composable(route = NavigationItem.Dashboard.route) {
+            DashboardScreen(
+                navigateToLogin = { navController.navigate(route = NavigationItem.Login.route) }
+            )
         }
     }
 }

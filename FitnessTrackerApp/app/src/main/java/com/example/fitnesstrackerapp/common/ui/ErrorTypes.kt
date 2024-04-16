@@ -5,3 +5,9 @@ sealed class RegistrationError {
     object NameLengthError : RegistrationError()
     object ProhibitedWordsError : RegistrationError()
 }
+
+enum class FirebaseAuthResponse {
+    NONE,
+    SUCCESS,
+    FAILURE
+}
