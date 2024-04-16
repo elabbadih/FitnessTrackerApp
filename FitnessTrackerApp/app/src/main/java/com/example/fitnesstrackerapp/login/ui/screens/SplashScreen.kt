@@ -25,8 +25,8 @@ import com.example.fitnesstrackerapp.ui.theme.LightModePrimary
 @Composable
 fun SplashScreen(
     viewModel: LoginViewModel = viewModel(),
-    navigateToLoginScreen: () -> Unit,
-    navigateToDashboardScreen: (String) -> Unit
+    navigateToLogin: () -> Unit,
+    navigateToDashboard: () -> Unit
 ) {
     
     LaunchedEffect(Unit) {
@@ -40,9 +40,9 @@ fun SplashScreen(
     // If displayName is not empty, navigate to Dashboard, otherwise Login screen
     splashLoginState?.also { displayName ->
         if (displayName.isNotEmpty()) {
-            navigateToDashboardScreen(displayName)
+            navigateToDashboard()
         } else {
-            navigateToLoginScreen()
+            navigateToLogin()
         }
     }
 

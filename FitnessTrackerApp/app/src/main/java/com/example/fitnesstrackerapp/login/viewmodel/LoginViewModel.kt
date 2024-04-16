@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnesstrackerapp.common.ui.RegistrationError
+import com.example.fitnesstrackerapp.common.ui.FirebaseAuthResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -20,8 +21,11 @@ class LoginViewModel : ViewModel() {
     private val _splashLoginState = MutableStateFlow<String?>(null)
     val splashLoginState: StateFlow<String?> = _splashLoginState
 
-    private val _registrationUserState = MutableStateFlow<String>("")
-    val registrationUserState: StateFlow<String> = _registrationUserState
+    private val _registrationUserState = MutableStateFlow(FirebaseAuthResponse.NONE)
+    val registrationUserState: StateFlow<FirebaseAuthResponse> = _registrationUserState
+
+    private val _signInUserState = MutableStateFlow(FirebaseAuthResponse.NONE)
+    val signInUserState: StateFlow<FirebaseAuthResponse> = _signInUserState
 
     /**
      * Updates the value of loginState with the currentUser logged in status
@@ -41,20 +45,67 @@ class LoginViewModel : ViewModel() {
      * Updates StateFlow with the status of the auth task
      */
     fun onUserSubmitLogin(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("TAG_X", "Login successful")
-                    val user = auth.currentUser
-                    // Let composable know login successful
-                } else {
-                    Log.d("TAG_X", "Login failure")
-                    // Toast.makeText()
-                    // Let composable know login failure
+        viewModelScope.launch {
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("TAG_X", "Login successful")
+                        _signInUserState.value = FirebaseAuthResponse.SUCCESS
+                    } else {
+                        Log.d("TAG_X", "Login failure")
+                        _signInUserState.value = FirebaseAuthResponse.FAILURE
+                    }
                 }
-            }
+        }
     }
 
+    fun resetFirebaseUserStates() {
+        _registrationUserState.value = FirebaseAuthResponse.NONE
+        _signInUserState.value = FirebaseAuthResponse.NONE
+    }
+
+    /**
+     * @param email Email value to register the new account
+     * @param password Password value to register the new account
+     *
+     * Takes the email and password and creates a new user through Firebase Auth
+     * Updates StateFlow with the status of the auth task
+     */
+    fun onRegisterNewUser(name: String, email: String, password: String) {
+        viewModelScope.launch {
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("TAG_X", "Registration successful")
+                        storeNewUserName(name, auth.currentUser)
+                    } else {
+                        Log.d("TAG_X", "Registration failure")
+                        _registrationUserState.value = FirebaseAuthResponse.FAILURE
+                    }
+                }
+        }
+    }
+
+    private fun storeNewUserName(name: String, currentUser: FirebaseUser?) {
+        val profileUpdate = userProfileChangeRequest { displayName = name }
+
+        viewModelScope.launch {
+            currentUser?.also { user ->
+                user.updateProfile(profileUpdate)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            _registrationUserState.value = FirebaseAuthResponse.SUCCESS
+                        } else {
+                            _registrationUserState.value = FirebaseAuthResponse.FAILURE
+                        }
+                    }
+            }
+        }
+    }
+
+    /**
+     * Validation functions
+     */
     fun validateNameInput(fullName: String, prohibitedWords: List<String>): RegistrationError {
 
         // Validate length
@@ -73,44 +124,5 @@ class LoginViewModel : ViewModel() {
         // TODO Email validation
 
         return RegistrationError.None
-    }
-
-    /**
-     * @param email Email value to register the new account
-     * @param password Password value to register the new account
-     *
-     * Takes the email and password and creates a new user through Firebase Auth
-     * Updates StateFlow with the status of the auth task
-     */
-    fun onRegisterNewUser(name: String, email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("TAG_X", "Registration successful")
-                    storeNewUserName(name, auth.currentUser)
-                } else {
-                    Log.d("TAG_X", "Registration failure")
-                    // Toast.makeText()
-                    // Let composable know registration failure
-                }
-            }
-    }
-
-    private fun storeNewUserName(name: String, currentUser: FirebaseUser?) {
-        val profileUpdate = userProfileChangeRequest {
-            displayName = name
-        }
-        currentUser?.also { user ->
-            user.updateProfile(profileUpdate)
-                .addOnCompleteListener { task ->
-                    user.displayName?.let { name ->
-                        if (task.isSuccessful) {
-                            _registrationUserState.value = name
-                        } else {
-                            // Update user displayName failure state
-                        }
-                    }
-                }
-        }
     }
 }

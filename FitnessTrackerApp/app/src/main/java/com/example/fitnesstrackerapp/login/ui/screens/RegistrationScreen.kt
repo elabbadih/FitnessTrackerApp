@@ -1,5 +1,7 @@
 package com.example.fitnesstrackerapp.login.ui.screens
 
+import android.widget.Toast.LENGTH_SHORT
+import android.widget.Toast.makeText
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,13 +34,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnesstrackerapp.common.ui.RegistrationError
+import com.example.fitnesstrackerapp.common.ui.FirebaseAuthResponse
 import com.example.fitnesstrackerapp.common.util.getProhibitedWordsList
 import com.example.fitnesstrackerapp.login.viewmodel.LoginViewModel
 
 @Composable
 fun RegistrationScreen(
     viewModel: LoginViewModel = viewModel(),
-    navigateToDashboardScreen: (String) -> Unit
+    navigateToDashboard: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -53,8 +56,15 @@ fun RegistrationScreen(
 
     val registrationUserState by viewModel.registrationUserState.collectAsState("")
 
-    if (registrationUserState.isNotEmpty()) {
-        navigateToDashboardScreen(registrationUserState)
+    when (registrationUserState) {
+        FirebaseAuthResponse.SUCCESS -> {
+            navigateToDashboard()
+        }
+        FirebaseAuthResponse.FAILURE -> {
+            makeText(context, "Something went wrong!", LENGTH_SHORT).show()
+            viewModel.resetFirebaseUserStates()
+        }
+        else -> {}
     }
 
     Column(
