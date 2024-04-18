@@ -15,7 +15,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.example.fitnesstrackerapp.common.ui.FitnessTrackerScaffold
 import com.example.fitnesstrackerapp.dashboard.ui.screens.DashboardScreen
+import com.example.fitnesstrackerapp.dashboard.ui.screens.ExercisesScreen
+import com.example.fitnesstrackerapp.dashboard.ui.screens.NotesScreen
+import com.example.fitnesstrackerapp.dashboard.ui.screens.SettingsScreen
 import com.example.fitnesstrackerapp.login.ui.screens.LoginScreen
 import com.example.fitnesstrackerapp.login.ui.screens.RegistrationScreen
 import com.example.fitnesstrackerapp.login.ui.screens.SplashScreen
@@ -62,30 +66,62 @@ fun AppNavHost(
     navController: NavHostController,
     startDestination: String = NavigationItem.Splash.route
 ) {
-    NavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = startDestination
+    FitnessTrackerScaffold(
+        onNavigationItemSelected = { item ->
+            when (item) {
+                NavigationItem.Dashboard -> {
+                    navController.navigate(route = NavigationItem.Dashboard.route)
+                }
+
+                NavigationItem.Exercises -> {
+                    navController.navigate(route = NavigationItem.Exercises.route)
+                }
+
+                NavigationItem.Notes -> {
+                    navController.navigate(route = NavigationItem.Notes.route)
+                }
+
+                NavigationItem.Settings -> {
+                    navController.navigate(route = NavigationItem.Settings.route)
+                }
+
+                else -> {}
+            }
+        }
     ) {
-        composable(route = NavigationItem.Splash.route) {
-            SplashScreen(
-                navigateToLogin = { navController.navigate(route = NavigationItem.Login.route) },
-                navigateToDashboard = { navController.navigate(route = NavigationItem.Dashboard.route) }
-            )
-        }
-        composable(route = NavigationItem.Login.route) {
-            LoginScreen(
-                navigateToRegistration = { navController.navigate(route = NavigationItem.Registration.route) },
-                navigateToDashboard = { navController.navigate(route = NavigationItem.Dashboard.route) }
-            )
-        }
-        composable(route = NavigationItem.Registration.route) {
-            RegistrationScreen(navigateToDashboard = { navController.navigate(route = NavigationItem.Dashboard.route) })
-        }
-        composable(route = NavigationItem.Dashboard.route) {
-            DashboardScreen(
-                navigateToLogin = { navController.navigate(route = NavigationItem.Login.route) }
-            )
+        NavHost(
+            modifier = modifier,
+            navController = navController,
+            startDestination = startDestination
+        ) {
+            composable(route = NavigationItem.Splash.route) {
+                SplashScreen(
+                    navigateToLogin = { navController.navigate(route = NavigationItem.Login.route) },
+                    navigateToDashboard = { navController.navigate(route = NavigationItem.Dashboard.route) }
+                )
+            }
+            composable(route = NavigationItem.Login.route) {
+                LoginScreen(
+                    navigateToRegistration = { navController.navigate(route = NavigationItem.Registration.route) },
+                    navigateToDashboard = { navController.navigate(route = NavigationItem.Dashboard.route) }
+                )
+            }
+            composable(route = NavigationItem.Registration.route) {
+                RegistrationScreen(navigateToDashboard = { navController.navigate(route = NavigationItem.Dashboard.route) })
+            }
+            composable(route = NavigationItem.Dashboard.route) {
+                DashboardScreen(navigateToLogin = { navController.navigate(route = NavigationItem.Login.route) })
+            }
+            composable(route = NavigationItem.Exercises.route) {
+                ExercisesScreen()
+            }
+            composable(route = NavigationItem.Notes.route) {
+                NotesScreen()
+            }
+            composable(route = NavigationItem.Settings.route) {
+                SettingsScreen()
+            }
         }
     }
+
 }

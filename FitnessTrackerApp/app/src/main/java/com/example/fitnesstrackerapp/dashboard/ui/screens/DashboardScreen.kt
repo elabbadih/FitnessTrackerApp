@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnesstrackerapp.common.ui.FirebaseAuthResponse
-import com.example.fitnesstrackerapp.common.ui.FitnessTrackerLayout
 import com.example.fitnesstrackerapp.dashboard.viewmodel.DashboardViewModel
 
 @Composable
@@ -28,19 +27,18 @@ fun DashboardScreen(
         FirebaseAuthResponse.SUCCESS -> {
             navigateToLogin()
         }
+
         else -> {}
     }
 
-    FitnessTrackerLayout(content = {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Welcome $displayName!"
-            )
-        }
-    })
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Welcome $displayName!"
+        )
+    }
 }
