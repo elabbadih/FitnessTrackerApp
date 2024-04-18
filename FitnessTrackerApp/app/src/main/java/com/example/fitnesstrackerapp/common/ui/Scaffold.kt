@@ -1,6 +1,6 @@
 package com.example.fitnesstrackerapp.common.ui
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,39 +9,60 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fitnesstrackerapp.NavigationItem
 import com.example.fitnesstrackerapp.R
 
-// TODO Set up onClick actions for BottomAppBar
 @Composable
-fun FitnessTrackerLayout(
+fun FitnessTrackerScaffold(
+    onNavigationItemSelected: (NavigationItem) -> Unit,
     content: @Composable () -> Unit
 ) {
+    var selectedItem by remember { mutableStateOf(NavigationItem.Dashboard as NavigationItem) }
+
     Scaffold(
         topBar = {
             CustomTopAppBar()
         },
         bottomBar = {
-            CustomBottomAppBar({})
+            CustomBottomAppBar(
+                selectedItem = selectedItem,
+                onItemSelected = { navItem ->
+                    selectedItem = navItem
+                    onNavigationItemSelected(navItem)
+                }
+            )
         }
     ) { innerPadding ->
         Column(
@@ -59,7 +80,7 @@ fun CustomTopAppBar() {
 
     TopAppBar(
         colors = TopAppBarColors(
-            containerColor = colors.primary,
+            containerColor = colors.tertiary,
             titleContentColor = colors.onPrimary,
             actionIconContentColor = colors.primary,
             navigationIconContentColor = colors.primary,
@@ -80,54 +101,71 @@ fun CustomTopAppBar() {
 
 @Composable
 fun CustomBottomAppBar(
-    onItemSelected: () -> Unit
+    selectedItem: NavigationItem,
+    onItemSelected: (NavigationItem) -> Unit
 ) {
     BottomAppBar(
-        containerColor = colorScheme.primaryContainer,
-        contentColor = colorScheme.primary
+        modifier = Modifier.height(80.dp),
+        containerColor = colorScheme.primary,
+        contentColor = colorScheme.secondary
     ) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            BottomBarButton(
-                text = stringResource(R.string.bottom_app_bar_item_1),
-                isSelected = true,
-                onClick = onItemSelected
+            BottomNavItemIcon(
+                isSelected = selectedItem == NavigationItem.Dashboard,
+                icon = Icons.Default.Home,
+                contentDescription = stringResource(id = R.string.bottom_app_bar_item_1),
+                onClick = {
+                    if (selectedItem != NavigationItem.Dashboard) {
+                        onItemSelected(NavigationItem.Dashboard)
+                    }
+                }
             )
-            BottomBarButton(
-                text = stringResource(R.string.bottom_app_bar_item_2),
-                isSelected = true,
-                onClick = onItemSelected
+            BottomNavItemIcon(
+                isSelected = selectedItem == NavigationItem.Exercises,
+                icon = Icons.Default.SportsGymnastics,
+                contentDescription = stringResource(id = R.string.bottom_app_bar_item_2),
+                onClick = {
+                    if (selectedItem != NavigationItem.Exercises) {
+                        onItemSelected(NavigationItem.Exercises)
+                    }
+                }
             )
-            BottomBarButton(
-                text = stringResource(R.string.bottom_app_bar_item_3),
-                isSelected = true,
-                onClick = onItemSelected
+            BottomNavItemIcon(
+                isSelected = selectedItem == NavigationItem.Notes,
+                icon = Icons.Default.Book,
+                contentDescription = stringResource(id = R.string.bottom_app_bar_item_3),
+                onClick = {
+                    if (selectedItem != NavigationItem.Notes) {
+                        onItemSelected(NavigationItem.Notes)
+                    }
+                }
             )
-            BottomBarButton(
-                text = stringResource(R.string.bottom_app_bar_item_4),
-                isSelected = true,
-                onClick = onItemSelected
+            BottomNavItemIcon(
+                isSelected = selectedItem == NavigationItem.Settings,
+                icon = Icons.Default.Settings,
+                contentDescription = stringResource(id = R.string.bottom_app_bar_item_4),
+                onClick = {
+                    if (selectedItem != NavigationItem.Settings) {
+                        onItemSelected(NavigationItem.Settings)
+                    }
+                }
             )
         }
     }
 }
 
-// TODO Replace Text with icons
 @Composable
-fun BottomBarButton(
-    text: String,
+fun BottomNavItemIcon(
     isSelected: Boolean,
+    icon: ImageVector,
+    contentDescription: String,
     onClick: () -> Unit
 ) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) colorScheme.primary else colorScheme.surface,
-            contentColor = if (isSelected) colorScheme.onPrimary else colorScheme.onSurface,
-        ),
-        shape = RoundedCornerShape(2.dp),
-        border = BorderStroke(1.dp, color = Color.Black)
-    ) {
-        Text(text = text, style = TextStyle(fontSize = 9.sp))
+    val color = if (isSelected) Color.Black else Color.Gray
+    Box(modifier = Modifier.size(42.dp)) {
+        IconButton(onClick = { onClick() }) {
+            Icon(imageVector = icon, contentDescription = contentDescription, tint = color)
+        }
     }
 }
 
@@ -139,13 +177,11 @@ fun PreviewScaffold() {
             CustomTopAppBar()
         },
         bottomBar = {
-            CustomBottomAppBar({})
+            CustomBottomAppBar(NavigationItem.Dashboard, {})
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
-        ) {
-
-        }
+        ) {}
     }
 }
