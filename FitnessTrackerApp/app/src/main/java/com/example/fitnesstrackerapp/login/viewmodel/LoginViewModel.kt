@@ -3,20 +3,23 @@ package com.example.fitnesstrackerapp.login.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fitnesstrackerapp.common.ui.RegistrationError
 import com.example.fitnesstrackerapp.common.ui.FirebaseAuthResponse
+import com.example.fitnesstrackerapp.common.ui.RegistrationError
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor() : ViewModel() {
 
-    private var auth: FirebaseAuth = Firebase.auth
+    private val auth: FirebaseAuth = Firebase.auth
 
     private val _splashLoginState = MutableStateFlow<String?>(null)
     val splashLoginState: StateFlow<String?> = _splashLoginState

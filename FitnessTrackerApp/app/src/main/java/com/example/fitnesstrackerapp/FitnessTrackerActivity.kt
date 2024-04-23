@@ -24,7 +24,9 @@ import com.example.fitnesstrackerapp.login.ui.screens.LoginScreen
 import com.example.fitnesstrackerapp.login.ui.screens.RegistrationScreen
 import com.example.fitnesstrackerapp.login.ui.screens.SplashScreen
 import com.example.fitnesstrackerapp.ui.theme.FitnessTrackerAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FitnessTrackerActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

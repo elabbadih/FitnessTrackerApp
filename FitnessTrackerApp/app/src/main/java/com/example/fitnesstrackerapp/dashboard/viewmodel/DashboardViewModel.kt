@@ -5,12 +5,15 @@ import com.example.fitnesstrackerapp.common.ui.FirebaseAuthResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class DashboardViewModel: ViewModel() {
+@HiltViewModel
+class DashboardViewModel @Inject constructor(): ViewModel() {
 
-    private var auth: FirebaseAuth = Firebase.auth
+    private val auth: FirebaseAuth = Firebase.auth
 
     private val _displayUserNameState = MutableStateFlow("")
     val displayUserNameState: StateFlow<String> = _displayUserNameState
