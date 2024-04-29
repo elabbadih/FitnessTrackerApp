@@ -1,10 +1,10 @@
-package com.example.flashfocusapp.dashboard.viewmodel
+package com.example.fitnesstrackerapp.dashboard.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.flashfocusapp.common.ui.FirebaseAuthResponse
-import com.example.flashfocusapp.dashboard.model.Flashcard
-import com.example.flashfocusapp.repositories.FlashcardRepositoryImpl
+import com.example.fitnesstrackerapp.common.ui.FirebaseAuthResponse
+import com.example.fitnesstrackerapp.dashboard.model.Flashcard
+import com.example.fitnesstrackerapp.repositories.FlashcardRepositoryImpl
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -20,11 +20,17 @@ class DashboardViewModel @Inject constructor(
     private val user: FirebaseUser?
 ) : ViewModel() {
 
+    /**
+     * Dashboard
+     */
     private val _displayUserNameState = MutableStateFlow("")
     val displayUserNameState: StateFlow<String> = _displayUserNameState
 
     private val _userSignOut = MutableStateFlow(FirebaseAuthResponse.NONE)
     val userSignOut: StateFlow<FirebaseAuthResponse> = _userSignOut
+
+    private val _flashcards = MutableStateFlow(listOf<Flashcard>())
+    val flashcards: StateFlow<List<Flashcard>> = _flashcards
 
     /**
      * Create Flashcards
@@ -42,7 +48,7 @@ class DashboardViewModel @Inject constructor(
         updateDisplayUserName()
 
         viewModelScope.launch {
-            repository
+
         }
     }
 
@@ -83,7 +89,20 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun getFlashcards() {
-        repository.getFlashcards(Firebase.auth.currentUser?.uid ?: "")
+        viewModelScope.launch {
+            user?.let {
+                repository.getFlashcards(uid = user.uid)
+                    .collect { result ->
+                        result.onSuccess { flashcards ->
+                            _flashcards.value = flashcards
+                        }
+                        result.onFailure { e ->
+                            // Handle failure here
+                        }
+                    }
+            }
+        }
+
     }
 
     fun createSubject(subject: String) {

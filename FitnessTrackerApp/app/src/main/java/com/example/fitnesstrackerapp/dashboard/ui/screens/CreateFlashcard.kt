@@ -1,4 +1,4 @@
-package com.example.flashfocusapp.dashboard.ui.screens
+package com.example.fitnesstrackerapp.dashboard.ui.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -33,7 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.flashfocusapp.dashboard.viewmodel.DashboardViewModel
+import com.example.fitnesstrackerapp.dashboard.viewmodel.DashboardViewModel
 
 @Composable
 fun CreateFlashcard(

@@ -1,4 +1,4 @@
-package com.example.flashfocusapp.dashboard.model
+package com.example.fitnesstrackerapp.dashboard.model
 
 data class Flashcard(
     val question: String = "",

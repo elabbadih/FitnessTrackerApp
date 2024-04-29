@@ -1,4 +1,4 @@
-package com.example.flashfocusapp.dashboard.ui.screens
+package com.example.fitnesstrackerapp.dashboard.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.flashfocusapp.dashboard.viewmodel.DashboardViewModel
+import com.example.fitnesstrackerapp.dashboard.viewmodel.DashboardViewModel
 
 @Composable
 fun AlarmScreen(

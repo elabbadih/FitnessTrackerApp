@@ -1,4 +1,4 @@
-package com.example.flashfocusapp
+package com.example.fitnesstrackerapp
 
 enum class Screen {
     ALARM,

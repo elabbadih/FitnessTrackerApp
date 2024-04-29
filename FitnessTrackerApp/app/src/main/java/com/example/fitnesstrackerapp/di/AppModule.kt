@@ -1,6 +1,6 @@
-package com.example.flashfocusapp.di
+package com.example.fitnesstrackerapp.di
 
-import com.example.flashfocusapp.repositories.FlashcardRepositoryImpl
+import com.example.fitnesstrackerapp.repositories.FlashcardRepositoryImpl
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
