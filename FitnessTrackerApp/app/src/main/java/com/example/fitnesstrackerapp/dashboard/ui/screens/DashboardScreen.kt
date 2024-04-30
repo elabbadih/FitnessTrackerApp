@@ -39,8 +39,6 @@ fun DashboardScreen(
 
     viewModel.getFlashcards()
 
-    Log.d("TAG_X", "Flashcards: $flashcards")
-
     Column(
         modifier = Modifier
             .fillMaxWidth()

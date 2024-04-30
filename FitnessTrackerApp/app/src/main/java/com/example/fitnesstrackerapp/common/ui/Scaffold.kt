@@ -10,8 +10,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -85,7 +89,7 @@ fun CustomTopAppBar() {
         title = {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
                 Text(
-                    text = "Fitness Tracker",
+                    text = "Flashcard App",
                     style = TextStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold)
                 )
             }
@@ -108,7 +112,7 @@ fun CustomBottomAppBar(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             BottomNavItemIcon(
                 isSelected = selectedItem == NavigationItem.Dashboard,
-                icon = Icons.Default.Home,
+                icon = Icons.AutoMirrored.Filled.MenuBook,
                 contentDescription = stringResource(id = R.string.bottom_app_bar_item_1),
                 onClick = {
                     if (selectedItem != NavigationItem.Dashboard) {
@@ -118,7 +122,7 @@ fun CustomBottomAppBar(
             )
             BottomNavItemIcon(
                 isSelected = selectedItem == NavigationItem.Create,
-                icon = Icons.Default.SportsGymnastics,
+                icon = Icons.Default.Edit,
                 contentDescription = stringResource(id = R.string.bottom_app_bar_item_2),
                 onClick = {
                     if (selectedItem != NavigationItem.Create) {
@@ -128,7 +132,7 @@ fun CustomBottomAppBar(
             )
             BottomNavItemIcon(
                 isSelected = selectedItem == NavigationItem.Alarm,
-                icon = Icons.Default.Book,
+                icon = Icons.Default.Alarm,
                 contentDescription = stringResource(id = R.string.bottom_app_bar_item_3),
                 onClick = {
                     if (selectedItem != NavigationItem.Alarm) {

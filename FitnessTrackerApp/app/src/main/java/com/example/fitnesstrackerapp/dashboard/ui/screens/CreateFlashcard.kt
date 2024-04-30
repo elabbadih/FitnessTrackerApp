@@ -11,15 +11,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -50,16 +56,17 @@ fun CreateFlashcard(
     val createButtonEnabled by viewModel.createButtonEnabled.collectAsState(true)
 
     val addCardResult by viewModel.addCardResult.collectAsState("")
-
-    if (addCardResult.isNotEmpty()) {
-        Toast.makeText(context, addCardResult, Toast.LENGTH_SHORT).show()
-    }
+    val addSubjectResult by viewModel.addSubjectResult.collectAsState("")
 
     // State for selected subject
     var selectedSubject by remember {
         mutableStateOf<String?>(null)
     }
     var subjectExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    var createSubjectExpanded by remember {
         mutableStateOf(false)
     }
 
@@ -72,9 +79,32 @@ fun CreateFlashcard(
     var question by remember {
         mutableStateOf("")
     }
-
     var answer by remember {
         mutableStateOf("")
+    }
+    var newSubject by remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.getSubjects()
+    }
+
+    if (addCardResult.isNotEmpty()) {
+        selectedSubject = null
+        difficultyLevel = 1
+        question = ""
+        answer = ""
+        Toast.makeText(context, addCardResult, Toast.LENGTH_SHORT).show()
+        viewModel.resetAddCardResult()
+    }
+
+    if (addSubjectResult.isNotEmpty()) {
+        createSubjectExpanded = false
+        newSubject = ""
+        Toast.makeText(context, "$addSubjectResult added successfully!", Toast.LENGTH_SHORT).show()
+        viewModel.resetAddSubjectResult()
+        viewModel.getSubjects()
     }
 
     Column(
@@ -122,8 +152,47 @@ fun CreateFlashcard(
                         }
                     )
                 }
-                DropdownMenuItem(text = { Text(text = "Add New Subject") }, onClick = { /*TODO*/ })
+                DropdownMenuItem(text = { Text(text = "Add New Subject") }, onClick = {
+                    // Display the textbox to input new subject
+                    createSubjectExpanded = true
+                    subjectExpanded = false
+                })
             }
+        }
+
+        if (createSubjectExpanded) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    value = newSubject,
+                    onValueChange = {
+                        if (it.length <= 20) {
+                            newSubject = it
+                        }
+                    },
+                    label = { Text(text = "New Subject") },
+                    minLines = 1,
+                    maxLines = 1
+                )
+                IconButton(onClick = {
+                    if (checkSubjectValid(newSubject)) {
+                        viewModel.createSubject(newSubject.trim())
+                    } else {
+                        Toast.makeText(context, "Subject not valid", Toast.LENGTH_SHORT).show()
+                    }
+                }) {
+                    Icon(imageVector = Icons.Default.Check, contentDescription = "Add")
+                }
+                IconButton(onClick = {
+                    createSubjectExpanded = false
+                    newSubject = ""
+                }) {
+                    Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                }
+            }
+            Spacer(modifier = Modifier.padding(vertical = 8.dp))
         }
 
         Text(text = "Difficulty level:")
@@ -195,7 +264,7 @@ fun CreateFlashcard(
             onClick = {
                 val formValid = checkFormValid(selectedSubject, question, answer)
                 if (formValid.first) {
-                    viewModel.addFlashcard(question, answer, difficultyLevel)
+                    viewModel.createFlashcard(question, answer, difficultyLevel)
                 } else {
                     Toast.makeText(context, formValid.second, Toast.LENGTH_SHORT).show()
                 }
@@ -215,6 +284,10 @@ private fun getSubjectSelected(selectedSubject: String?): String {
     }
 }
 
+private fun checkSubjectValid(subject: String): Boolean {
+    return subject.length <= 20
+}
+
 private fun checkFormValid(
     selectedSubject: String?,
     question: String,
@@ -224,12 +297,15 @@ private fun checkFormValid(
         selectedSubject.isNullOrEmpty() -> {
             Pair(false, "Select subject")
         }
+
         question.isEmpty() -> {
             Pair(false, "Enter question")
         }
+
         answer.isEmpty() -> {
             Pair(false, "Enter answer")
         }
+
         else -> {
             Pair(true, "")
         }

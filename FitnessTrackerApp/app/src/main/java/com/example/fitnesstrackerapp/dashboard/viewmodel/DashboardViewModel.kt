@@ -35,11 +35,14 @@ class DashboardViewModel @Inject constructor(
     /**
      * Create Flashcards
      */
-    private val _cardSubjects = MutableStateFlow(listOf("Math", "Science", "English", "History"))
+    private val _cardSubjects = MutableStateFlow(listOf<String>())
     val cardSubjects: StateFlow<List<String>> = _cardSubjects
 
     private val _addCardResult = MutableStateFlow("")
     val addCardResult: StateFlow<String> = _addCardResult
+
+    private val _addSubjectResult = MutableStateFlow("")
+    val addSubjectResult: StateFlow<String> = _addSubjectResult
 
     private val _createButtonEnabled = MutableStateFlow(true)
     val createButtonEnabled: StateFlow<Boolean> = _createButtonEnabled
@@ -61,7 +64,7 @@ class DashboardViewModel @Inject constructor(
         _displayUserNameState.value = user?.displayName ?: ""
     }
 
-    fun addFlashcard(question: String, answer: String, difficulty: Int) {
+    fun createFlashcard(question: String, answer: String, difficulty: Int) {
         val flashcard = Flashcard(
             question = question,
             answer = answer,
@@ -71,7 +74,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             user?.let { user ->
                 _createButtonEnabled.value = false
-                repository.addCardToDatabase(flashcard = flashcard, uid = user.uid)
+                repository.addFlashcard(flashcard = flashcard, uid = user.uid)
                     .collect { result ->
                         when {
                             result.isSuccess -> {
@@ -106,6 +109,44 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun createSubject(subject: String) {
+        viewModelScope.launch {
+            user?.let {
+                repository.addSubject(subject = subject, uid = user.uid)
+                    .collect { result ->
+                        result.onSuccess {  subject ->
+                            // Let user know subject added successfully, update subject list
+                            _addSubjectResult.value = subject
+                        }
+                        result.onFailure {  e->
+                            // Handle failure here
+                        }
+                    }
+            }
+        }
+    }
 
+    fun getSubjects() {
+        viewModelScope.launch {
+            user?.let {
+                repository.getSubjects(user.uid)
+                    .collect { result ->
+                        result.onSuccess { subjectsList ->
+                            // Update list of subjects
+                            _cardSubjects.value = subjectsList
+                        }
+                        result.onFailure { e ->
+                            // Handle failure here
+                        }
+                    }
+            }
+        }
+    }
+
+    fun resetAddCardResult() {
+        _addCardResult.value = ""
+    }
+
+    fun resetAddSubjectResult() {
+        _addSubjectResult.value = ""
     }
 }
