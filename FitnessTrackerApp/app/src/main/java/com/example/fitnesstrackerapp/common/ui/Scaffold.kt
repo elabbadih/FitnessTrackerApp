@@ -1,6 +1,5 @@
 package com.example.fitnesstrackerapp.common.ui
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,12 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.SportsGymnastics
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -45,7 +41,7 @@ import com.example.fitnesstrackerapp.NavigationItem
 import com.example.fitnesstrackerapp.R
 
 @Composable
-fun FitnessTrackerScaffold(
+fun FlashWiseScaffold(
     onNavigationItemSelected: (NavigationItem) -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -89,7 +85,7 @@ fun CustomTopAppBar() {
         title = {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
                 Text(
-                    text = "Fitness Tracker",
+                    text = "Flashcard App",
                     style = TextStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold)
                 )
             }
@@ -112,7 +108,7 @@ fun CustomBottomAppBar(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             BottomNavItemIcon(
                 isSelected = selectedItem == NavigationItem.Dashboard,
-                icon = Icons.Default.Home,
+                icon = Icons.AutoMirrored.Filled.MenuBook,
                 contentDescription = stringResource(id = R.string.bottom_app_bar_item_1),
                 onClick = {
                     if (selectedItem != NavigationItem.Dashboard) {
@@ -121,32 +117,22 @@ fun CustomBottomAppBar(
                 }
             )
             BottomNavItemIcon(
-                isSelected = selectedItem == NavigationItem.Exercises,
-                icon = Icons.Default.SportsGymnastics,
+                isSelected = selectedItem == NavigationItem.Create,
+                icon = Icons.Default.Edit,
                 contentDescription = stringResource(id = R.string.bottom_app_bar_item_2),
                 onClick = {
-                    if (selectedItem != NavigationItem.Exercises) {
-                        onItemSelected(NavigationItem.Exercises)
+                    if (selectedItem != NavigationItem.Create) {
+                        onItemSelected(NavigationItem.Create)
                     }
                 }
             )
             BottomNavItemIcon(
-                isSelected = selectedItem == NavigationItem.Notes,
-                icon = Icons.Default.Book,
+                isSelected = selectedItem == NavigationItem.Alarm,
+                icon = Icons.Default.Alarm,
                 contentDescription = stringResource(id = R.string.bottom_app_bar_item_3),
                 onClick = {
-                    if (selectedItem != NavigationItem.Notes) {
-                        onItemSelected(NavigationItem.Notes)
-                    }
-                }
-            )
-            BottomNavItemIcon(
-                isSelected = selectedItem == NavigationItem.Settings,
-                icon = Icons.Default.Settings,
-                contentDescription = stringResource(id = R.string.bottom_app_bar_item_4),
-                onClick = {
-                    if (selectedItem != NavigationItem.Settings) {
-                        onItemSelected(NavigationItem.Settings)
+                    if (selectedItem != NavigationItem.Alarm) {
+                        onItemSelected(NavigationItem.Alarm)
                     }
                 }
             )

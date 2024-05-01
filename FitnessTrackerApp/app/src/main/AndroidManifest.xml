@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:name=".FitnessTrackerApplication"
+        android:name=".FlashWiseApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -11,12 +11,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FitnessTrackerApp"
+        android:theme="@style/Theme.FlashWiseApp"
         tools:targetApi="31">
         <activity
-            android:name=".FitnessTrackerActivity"
+            android:name=".FlashWiseActivity"
             android:exported="true"
-            android:theme="@style/Theme.FitnessTrackerApp"
+            android:theme="@style/Theme.FlashWiseApp"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>

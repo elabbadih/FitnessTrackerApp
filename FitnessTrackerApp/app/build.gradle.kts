@@ -60,6 +60,10 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-auth:8.0.2")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
 
+    // Add the dependency for the Realtime Database library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-database")
+
     implementation("androidx.security:security-crypto-ktx:1.1.0-alpha06")
 
     // Hilt dependencies

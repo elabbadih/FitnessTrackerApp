@@ -15,19 +15,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.example.fitnesstrackerapp.common.ui.FitnessTrackerScaffold
+import com.example.fitnesstrackerapp.common.ui.FlashWiseScaffold
+import com.example.fitnesstrackerapp.dashboard.ui.screens.AlarmScreen
+import com.example.fitnesstrackerapp.dashboard.ui.screens.CreateFlashcard
 import com.example.fitnesstrackerapp.dashboard.ui.screens.DashboardScreen
-import com.example.fitnesstrackerapp.dashboard.ui.screens.ExercisesScreen
-import com.example.fitnesstrackerapp.dashboard.ui.screens.NotesScreen
-import com.example.fitnesstrackerapp.dashboard.ui.screens.SettingsScreen
 import com.example.fitnesstrackerapp.login.ui.screens.LoginScreen
 import com.example.fitnesstrackerapp.login.ui.screens.RegistrationScreen
 import com.example.fitnesstrackerapp.login.ui.screens.SplashScreen
-import com.example.fitnesstrackerapp.ui.theme.FitnessTrackerAppTheme
+import com.example.fitnesstrackerapp.ui.theme.FlashWiseAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FitnessTrackerActivity : ComponentActivity() {
+class FlashWiseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +35,7 @@ class FitnessTrackerActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            FitnessTrackerAppTheme {
+            FlashWiseAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -68,23 +67,19 @@ fun AppNavHost(
     navController: NavHostController,
     startDestination: String = NavigationItem.Splash.route
 ) {
-    FitnessTrackerScaffold(
+    FlashWiseScaffold(
         onNavigationItemSelected = { item ->
             when (item) {
                 NavigationItem.Dashboard -> {
                     navController.navigate(route = NavigationItem.Dashboard.route)
                 }
 
-                NavigationItem.Exercises -> {
-                    navController.navigate(route = NavigationItem.Exercises.route)
+                NavigationItem.Create -> {
+                    navController.navigate(route = NavigationItem.Create.route)
                 }
 
-                NavigationItem.Notes -> {
-                    navController.navigate(route = NavigationItem.Notes.route)
-                }
-
-                NavigationItem.Settings -> {
-                    navController.navigate(route = NavigationItem.Settings.route)
+                NavigationItem.Alarm -> {
+                    navController.navigate(route = NavigationItem.Alarm.route)
                 }
 
                 else -> {}
@@ -114,14 +109,11 @@ fun AppNavHost(
             composable(route = NavigationItem.Dashboard.route) {
                 DashboardScreen(navigateToLogin = { navController.navigate(route = NavigationItem.Login.route) })
             }
-            composable(route = NavigationItem.Exercises.route) {
-                ExercisesScreen()
+            composable(route = NavigationItem.Create.route) {
+                CreateFlashcard()
             }
-            composable(route = NavigationItem.Notes.route) {
-                NotesScreen()
-            }
-            composable(route = NavigationItem.Settings.route) {
-                SettingsScreen()
+            composable(route = NavigationItem.Alarm.route) {
+                AlarmScreen()
             }
         }
     }
