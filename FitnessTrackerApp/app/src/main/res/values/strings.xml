@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Flashcard App</string>
+    <string name="app_name">FlashWise App</string>
 
     <!-- Scaffold -->
     <string name="bottom_app_bar_item_1">DASHBOARD</string>

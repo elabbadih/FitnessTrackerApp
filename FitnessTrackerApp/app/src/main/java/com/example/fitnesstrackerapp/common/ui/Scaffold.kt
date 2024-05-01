@@ -12,11 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Alarm
-import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MenuBook
-import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,7 +41,7 @@ import com.example.fitnesstrackerapp.NavigationItem
 import com.example.fitnesstrackerapp.R
 
 @Composable
-fun FitnessTrackerScaffold(
+fun FlashWiseScaffold(
     onNavigationItemSelected: (NavigationItem) -> Unit,
     content: @Composable () -> Unit
 ) {

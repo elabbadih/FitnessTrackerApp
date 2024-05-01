@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,6 +58,8 @@ fun CreateFlashcard(
 
     val addCardResult by viewModel.addCardResult.collectAsState("")
     val addSubjectResult by viewModel.addSubjectResult.collectAsState("")
+
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     // State for selected subject
     var selectedSubject by remember {
@@ -262,6 +265,7 @@ fun CreateFlashcard(
         Button(
             enabled = createButtonEnabled,
             onClick = {
+                keyboardController?.hide()
                 val formValid = checkFormValid(selectedSubject, question, answer)
                 if (formValid.first) {
                     viewModel.createFlashcard(question, answer, difficultyLevel)
