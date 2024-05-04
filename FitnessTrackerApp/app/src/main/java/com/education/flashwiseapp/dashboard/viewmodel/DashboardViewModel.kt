@@ -23,33 +23,16 @@ class DashboardViewModel @Inject constructor(
     /**
      * Dashboard
      */
-    private val _displayUserNameState = MutableStateFlow("")
-    val displayUserNameState: StateFlow<String> = _displayUserNameState
-
     private val _userSignOut = MutableStateFlow(FirebaseAuthResponse.NONE)
     val userSignOut: StateFlow<FirebaseAuthResponse> = _userSignOut
+
+    private val _subjects = MutableStateFlow(listOf<String>())
+    val subjects: StateFlow<List<String>> = _subjects
 
     private val _flashcards = MutableStateFlow(listOf<Flashcard>())
     val flashcards: StateFlow<List<Flashcard>> = _flashcards
 
-    /**
-     * Create Flashcards
-     */
-    private val _cardSubjects = MutableStateFlow(listOf<String>())
-    val cardSubjects: StateFlow<List<String>> = _cardSubjects
-
-    private val _addCardResult = MutableStateFlow("")
-    val addCardResult: StateFlow<String> = _addCardResult
-
-    private val _addSubjectResult = MutableStateFlow("")
-    val addSubjectResult: StateFlow<String> = _addSubjectResult
-
-    private val _createButtonEnabled = MutableStateFlow(true)
-    val createButtonEnabled: StateFlow<Boolean> = _createButtonEnabled
-
     init {
-        updateDisplayUserName()
-
         viewModelScope.launch {
 
         }
@@ -60,32 +43,17 @@ class DashboardViewModel @Inject constructor(
         _userSignOut.value = FirebaseAuthResponse.SUCCESS
     }
 
-    private fun updateDisplayUserName() {
-        _displayUserNameState.value = user?.displayName ?: ""
-    }
-
-    fun createFlashcard(question: String, answer: String, difficulty: Int) {
-        val flashcard = Flashcard(
-            question = question,
-            answer = answer,
-            difficulty = difficulty,
-            dateCreated = System.currentTimeMillis()
-        )
+    fun getSubjects() {
         viewModelScope.launch {
-            user?.let { user ->
-                _createButtonEnabled.value = false
-                repository.addFlashcard(flashcard = flashcard, uid = user.uid)
+            user?.let {
+                repository.getSubjects(uid = user.uid)
                     .collect { result ->
-                        when {
-                            result.isSuccess -> {
-                                _addCardResult.value = "Flashcard added successfully"
-                            }
-
-                            else -> {
-                                _addCardResult.value = "Error adding flashcard"
-                            }
+                        result.onSuccess {  subjects ->
+                            _subjects.value = subjects
                         }
-                        _createButtonEnabled.value = true
+                        result.onFailure { e ->
+                            // Handle failure here
+                        }
                     }
             }
         }
@@ -105,48 +73,5 @@ class DashboardViewModel @Inject constructor(
                     }
             }
         }
-
-    }
-
-    fun createSubject(subject: String) {
-        viewModelScope.launch {
-            user?.let {
-                repository.addSubject(subject = subject, uid = user.uid)
-                    .collect { result ->
-                        result.onSuccess {  subject ->
-                            // Let user know subject added successfully, update subject list
-                            _addSubjectResult.value = subject
-                        }
-                        result.onFailure {  e->
-                            // Handle failure here
-                        }
-                    }
-            }
-        }
-    }
-
-    fun getSubjects() {
-        viewModelScope.launch {
-            user?.let {
-                repository.getSubjects(user.uid)
-                    .collect { result ->
-                        result.onSuccess { subjectsList ->
-                            // Update list of subjects
-                            _cardSubjects.value = subjectsList
-                        }
-                        result.onFailure { e ->
-                            // Handle failure here
-                        }
-                    }
-            }
-        }
-    }
-
-    fun resetAddCardResult() {
-        _addCardResult.value = ""
-    }
-
-    fun resetAddSubjectResult() {
-        _addSubjectResult.value = ""
     }
 }

@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.education.flashwiseapp.common.ui.RegistrationError
 import com.education.flashwiseapp.common.ui.FirebaseAuthResponse
-import com.education.flashwiseapp.common.util.getProhibitedWordsList
 import com.education.flashwiseapp.login.viewmodel.LoginViewModel
 
 @Composable
@@ -46,7 +45,6 @@ fun RegistrationScreen(
 
     val context = LocalContext.current
 
-    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passConfirm by remember { mutableStateOf("") }
@@ -60,10 +58,12 @@ fun RegistrationScreen(
         FirebaseAuthResponse.SUCCESS -> {
             navigateToDashboard()
         }
+
         FirebaseAuthResponse.FAILURE -> {
             makeText(context, "Something went wrong!", LENGTH_SHORT).show()
             viewModel.resetFirebaseUserStates()
         }
+
         else -> {}
     }
 
@@ -74,16 +74,6 @@ fun RegistrationScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.height(48.dp))
-
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = name,
-            onValueChange = { nameInput -> name = nameInput },
-            label = { Text(text = "Full Name") },
-            textStyle = MaterialTheme.typography.bodyMedium
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -140,12 +130,9 @@ fun RegistrationScreen(
 
                 if (password == passConfirm) {
                     isLoading = true
-                    val nameError = viewModel.validateNameInput(
-                        fullName = name,
-                        prohibitedWords = getProhibitedWordsList(context = context)
-                    )
+                    val nameError = viewModel.validateEmailInput(email = email)
                     if (nameError == RegistrationError.None) {
-                        viewModel.onRegisterNewUser(name, email, password)
+                        viewModel.onRegisterNewUser(email, password)
                     }
                     // TODO Add error messages for different registration errors
 

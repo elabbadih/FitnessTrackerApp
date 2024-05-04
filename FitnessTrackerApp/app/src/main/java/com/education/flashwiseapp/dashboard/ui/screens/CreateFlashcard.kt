@@ -40,15 +40,17 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.education.flashwiseapp.dashboard.viewmodel.DashboardViewModel
+import com.education.flashwiseapp.dashboard.viewmodel.FlashcardViewModel
 
 @Composable
 fun CreateFlashcard(
-    viewModel: DashboardViewModel = hiltViewModel()
+    viewModel: FlashcardViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val maxQuestionLength = 100
     val maxAnswerLength = 200
+
+    // TODO split into smaller Composable
 
     // Subjects for dropdown list
     val createCardSubjects by viewModel.cardSubjects.collectAsState(listOf(""))
@@ -267,8 +269,9 @@ fun CreateFlashcard(
             onClick = {
                 keyboardController?.hide()
                 val formValid = checkFormValid(selectedSubject, question, answer)
-                if (formValid.first) {
-                    viewModel.createFlashcard(question, answer, difficultyLevel)
+                val subject = selectedSubject ?: ""
+                if (formValid.first && subject.isNotEmpty()) {
+                    viewModel.createFlashcard(subject, question, answer, difficultyLevel)
                 } else {
                     Toast.makeText(context, formValid.second, Toast.LENGTH_SHORT).show()
                 }

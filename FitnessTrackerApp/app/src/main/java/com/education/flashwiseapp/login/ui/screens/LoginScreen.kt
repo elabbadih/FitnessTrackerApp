@@ -55,6 +55,7 @@ fun LoginScreen(
         FirebaseAuthResponse.FAILURE -> {
             makeText(context, "Something went wrong!", LENGTH_SHORT).show()
             viewModel.resetFirebaseUserStates()
+            isLoading = false
         }
 
         else -> {}
@@ -119,6 +120,14 @@ fun LoginScreen(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = "Don't have an account? Register here")
+        }
+
+        // TODO Navigate to Reset Password screen
+        TextButton(
+            onClick = { },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "Forgot your password?")
         }
     }
 }
