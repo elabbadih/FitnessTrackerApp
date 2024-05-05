@@ -29,12 +29,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.education.flashwiseapp.R
 import com.education.flashwiseapp.common.ui.RegistrationError
 import com.education.flashwiseapp.common.ui.FirebaseAuthResponse
+import com.education.flashwiseapp.common.util.PASSWORD_LENGTH
 import com.education.flashwiseapp.login.viewmodel.LoginViewModel
 
 @Composable
@@ -79,7 +82,7 @@ fun RegistrationScreen(
             modifier = Modifier.fillMaxWidth(),
             value = email,
             onValueChange = { emailInput -> email = emailInput },
-            label = { Text(text = "Email Address") },
+            label = { Text(text = stringResource(id = R.string.email_address_label)) },
             textStyle = MaterialTheme.typography.bodyMedium
         )
 
@@ -88,15 +91,19 @@ fun RegistrationScreen(
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = password,
-            onValueChange = { passInput -> password = passInput },
-            label = { Text(text = "Password") },
+            onValueChange = { passInput ->
+                if (passInput.length <= PASSWORD_LENGTH) password = passInput
+            },
+            label = { Text(text = stringResource(id = R.string.password_label)) },
             textStyle = MaterialTheme.typography.bodyMedium,
             visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                     Icon(
                         imageVector = if (isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                        contentDescription = if (isPasswordVisible) "Hide Password" else "Show Password"
+                        contentDescription = if (isPasswordVisible) stringResource(id = R.string.password_description_hide) else stringResource(
+                            id = R.string.password_description_show
+                        )
                     )
                 }
             }
@@ -107,15 +114,19 @@ fun RegistrationScreen(
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = passConfirm,
-            onValueChange = { passInput -> passConfirm = passInput },
-            label = { Text(text = "Confirm Password") },
+            onValueChange = { passInput ->
+                if (passInput.length <= PASSWORD_LENGTH) passConfirm = passInput
+            },
+            label = { Text(text = stringResource(id = R.string.password_confirm)) },
             textStyle = MaterialTheme.typography.bodyMedium,
             visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                     Icon(
                         imageVector = if (isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                        contentDescription = if (isPasswordVisible) "Hide Password" else "Show Password"
+                        contentDescription = if (isPasswordVisible) stringResource(id = R.string.password_description_hide) else stringResource(
+                            id = R.string.password_description_show
+                        )
                     )
                 }
             }
@@ -130,12 +141,15 @@ fun RegistrationScreen(
 
                 if (password == passConfirm) {
                     isLoading = true
-                    val nameError = viewModel.validateEmailInput(email = email)
-                    if (nameError == RegistrationError.None) {
-                        viewModel.onRegisterNewUser(email, password)
-                    }
-                    // TODO Add error messages for different registration errors
+                    when (viewModel.validateRegistrationInput(email = email.trim())) {
+                        RegistrationError.LengthError -> {
+                            errorMessage = "Email input incorrect."
+                        }
 
+                        else -> {
+                            viewModel.onRegisterNewUser(email, password)
+                        }
+                    }
                 } else {
                     errorMessage = "Passwords do not match."
                 }
@@ -149,7 +163,7 @@ fun RegistrationScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
             } else {
-                Text(text = "Create account")
+                Text(text = stringResource(id = R.string.create_account_button))
             }
         }
 

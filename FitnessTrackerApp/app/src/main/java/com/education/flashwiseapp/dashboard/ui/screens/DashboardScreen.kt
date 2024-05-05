@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,8 +24,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.education.flashwiseapp.R
 import com.education.flashwiseapp.common.ui.FirebaseAuthResponse
 import com.education.flashwiseapp.dashboard.model.Flashcard
 import com.education.flashwiseapp.dashboard.viewmodel.DashboardViewModel
@@ -56,18 +61,19 @@ fun DashboardScreen(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+        // TODO Sort subjects by alphabetical, date created, etc.
         subjects.forEach { subject ->
             var isExpanded by remember { mutableStateOf(false) }
-            val subjectFlashcards = flashcards.filter { it.subject == subject }
 
             ExpandableSubjectItem(
                 subject = subject,
                 isExpanded = isExpanded,
-                onClick = { isExpanded = !isExpanded })
+                onClick = { isExpanded = !isExpanded }
+            )
 
             if (isExpanded) {
-                flashcards.forEach { flashcard ->
-                    Text(text = flashcard.question)
+                flashcards.filter { it.subject == subject }.forEach { flashcard ->
+                    FlashcardItem(flashcard = flashcard)
                 }
             }
         }
@@ -80,7 +86,8 @@ fun ExpandableSubjectItem(
     isExpanded: Boolean,
     onClick: () -> Unit
 ) {
-    val borderColor = if (isExpanded) Color.Black else Color.Gray
+//    val borderColor = if (isExpanded) Color.Black else Color.Gray
+    val borderColor = colorScheme.primary
     val arrowIcon =
         if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
     val clickModifier = Modifier.clickable(onClick = onClick)
@@ -88,16 +95,49 @@ fun ExpandableSubjectItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .border(1.dp, borderColor, RoundedCornerShape(4.dp))
+            .padding(top = 8.dp, bottom = 0.dp, start = 16.dp, end = 16.dp)
+            .border(2.dp, borderColor, RoundedCornerShape(4.dp))
             .then(clickModifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = subject, modifier = Modifier.weight(1f))
+        Text(
+            text = subject,
+            fontSize = 24.sp,
+            modifier = Modifier
+                .weight(1f)
+                .padding(4.dp)
+        )
         Icon(
             imageVector = arrowIcon,
-            contentDescription = "Expand/Collapse Arrow",
+            contentDescription = stringResource(id = R.string.expand_arrow_description),
             tint = borderColor
         )
+    }
+}
+
+@Composable
+fun FlashcardItem(flashcard: Flashcard) {
+    var isExpanded by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 0.dp)
+            .border(1.dp, Color.Black, RoundedCornerShape(1.dp))
+            .clickable { isExpanded = !isExpanded }
+    ) {
+        Text(
+            text = flashcard.question,
+            fontSize = 18.sp,
+            modifier = Modifier
+                .padding(2.dp)
+        )
+        if (isExpanded) {
+            Text(
+                text = flashcard.answer,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .padding(2.dp)
+            )
+        }
     }
 }

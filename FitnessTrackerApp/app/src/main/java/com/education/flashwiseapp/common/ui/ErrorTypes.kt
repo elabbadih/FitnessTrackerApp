@@ -2,7 +2,8 @@ package com.education.flashwiseapp.common.ui
 
 sealed class RegistrationError {
     object None : RegistrationError()
-    object NameLengthError : RegistrationError()
+    object LengthError : RegistrationError()
+    object RegexError: RegistrationError()
 }
 
 enum class FirebaseAuthResponse {

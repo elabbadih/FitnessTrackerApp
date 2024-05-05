@@ -1,5 +1,8 @@
 package com.education.flashwiseapp.repositories
 
+import com.education.flashwiseapp.common.util.FLASHCARDS_PATH
+import com.education.flashwiseapp.common.util.SUBJECTS_PATH
+import com.education.flashwiseapp.common.util.USERS_PATH
 import com.education.flashwiseapp.dashboard.model.Flashcard
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -155,15 +158,15 @@ class FlashcardRepositoryImpl @Inject constructor(private val firebaseDatabase: 
 
     private fun getFlashcardsReference(uid: String): DatabaseReference {
         return firebaseDatabase.reference
-            .child("users")
+            .child(USERS_PATH)
             .child(uid)
-            .child("flashcards")
+            .child(FLASHCARDS_PATH)
     }
 
     private fun getSubjectsReference(uid: String): DatabaseReference {
         return firebaseDatabase.reference
-            .child("users")
+            .child(USERS_PATH)
             .child(uid)
-            .child("subjects")
+            .child(SUBJECTS_PATH)
     }
 }

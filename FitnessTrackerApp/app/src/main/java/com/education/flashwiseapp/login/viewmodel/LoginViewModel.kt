@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.education.flashwiseapp.common.ui.FirebaseAuthResponse
 import com.education.flashwiseapp.common.ui.RegistrationError
+import com.education.flashwiseapp.common.util.EMAIL_REGEX
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -96,15 +97,18 @@ class LoginViewModel @Inject constructor() : ViewModel() {
     /**
      * Validation functions
      */
-    fun validateEmailInput(email: String): RegistrationError {
+    fun validateRegistrationInput(email: String): RegistrationError {
 
         // Validate length
         if (email.length !in 2..50) {
-            return RegistrationError.NameLengthError
+            return RegistrationError.LengthError
         }
 
         // Validate email
-        // TODO Email validation
+        val regex = EMAIL_REGEX.toRegex()
+        if (!regex.matches(email)) {
+            return RegistrationError.RegexError
+        }
 
         return RegistrationError.None
     }
